@@ -1,0 +1,1 @@
+Open `1_Esp_pelumi_project.ino` in Arduino IDE. Keep all `.ino` files together. Follow the root [setup guide](../README.md) to generate the private signing header, register the public key, configure the meter ID and MQTT account, compile, upload and verify the live readings.

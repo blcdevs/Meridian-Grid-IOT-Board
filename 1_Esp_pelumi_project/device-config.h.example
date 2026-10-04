@@ -1,0 +1,9 @@
+#pragma once
+// Copy to device-config.h in this sketch folder. Never commit the filled file.
+// Paste the generated meter ID shown in Devices → Add device.
+const char *DEVICE_ID = "meter-REPLACE_WITH_DASHBOARD_ID";
+// Ask the broker administrator for a separate account for this meter.
+const char *MQTT_HOST = "REPLACE_WITH_BROKER_HOST";
+const uint16_t MQTT_PORT = 1883;
+const char *MQTT_USERNAME = "REPLACE_WITH_MQTT_USERNAME";
+const char *MQTT_PASSWORD = "REPLACE_WITH_MQTT_PASSWORD";

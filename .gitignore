@@ -1,0 +1,9 @@
+.DS_Store
+**/device-config.h
+**/device-signing-secret.h
+**/public-key.pem
+**/*.key
+**/*.pem
+**/build/
+**/.arduino*/
+*.log
