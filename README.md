@@ -1,6 +1,6 @@
 # Meridian Grid IoT board
 
-ESP32-S3 meter sketch for PV generation and AC load telemetry. This repository contains the source code and **no working secrets**. The bench-tested engineer's copy was compiled with ESP32 core 3.3.0, AsyncMqttClient 0.9.0 and ESP32Async AsyncTCP 3.3.2. This public package has the same measurement, queue, and signing logic, but moves the meter ID and broker credentials into a local ignored header. It still needs a compile and a physical-board test after configuration.
+ESP32-S3 meter sketch for PV generation and AC load telemetry. This repository contains the source code and **no working secrets**. The prior private engineer's copy was compiled with ESP32 core 3.3.0, AsyncMqttClient 0.9.0 and ESP32Async AsyncTCP 3.3.2. This public package has the same measurement, queue, and signing logic, but moves the meter ID and broker credentials into a local ignored header. It still needs a compile and a physical-board test after configuration.
 
 ## What you need
 
