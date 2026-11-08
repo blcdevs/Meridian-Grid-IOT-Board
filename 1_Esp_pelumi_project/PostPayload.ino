@@ -13,10 +13,14 @@ String canonicalPayload(const char *timestampUtc, uint32_t recordSequence,
   return String(canonical);
 }
 
-void buildAndSendPayload() {
-  const DateTime now = rtc.now();
+void formatTelemetryTime(const DateTime &time, char *timestampUtc, size_t size) {
+  snprintf(timestampUtc, size, "%04d-%02d-%02dT%02d:%02d:%02dZ",
+           time.year(), time.month(), time.day(), time.hour(), time.minute(), time.second());
+}
+
+void buildAndSendPayload(const DateTime &measuredAt) {
   char timestampUtc[25];
-  snprintf(timestampUtc, sizeof(timestampUtc), "%04d-%02d-%02dT%02d:%02d:%02dZ", now.year(), now.month(), now.day(), now.hour(), now.minute(), now.second());
+  formatTelemetryTime(measuredAt, timestampUtc, sizeof(timestampUtc));
   const int32_t pvVoltage_mV = lroundf(solarVolt * 1000.0f);
   const int32_t pvCurrent_mA = lroundf(solarAmp * 1000.0f);
   const int32_t pvPower_mW = lroundf(solarWatts * 1000.0f);

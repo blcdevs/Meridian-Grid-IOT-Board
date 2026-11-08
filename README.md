@@ -29,3 +29,9 @@ The backend rejects readings if the `DEVICE_ID` in the signed payload differs fr
 - Zero power: check current as well as voltage. The firmware suppresses small readings and uses an assumed AC power factor. Inspect wiring and calibration with the intended load connected.
 
 The firmware preserves its sequence number and offline queue across resets. Do not erase flash merely to start a new dashboard test; use the admin's **Start fresh PV test** control, which leaves the ledger and earlier records intact.
+
+## CSV timing for a new reading
+
+Upload this sketch with the meter's existing configuration and signing key. In Arduino IDE leave **Erase All Flash Before Sketch Upload** disabled so the sequence counter and offline queue survive. The measurement time is taken immediately after the sampling pass for the minute record. The sketch separately signs the time it prepares the MQTT publish attempt, including when replaying a queued record. Both device times use the DS3231 clock in UTC with one-second resolution.
+
+Before collecting the next test, verify a new reading appears in the dashboard. After the reading is committed to Fabric, use **Export Excel CSV** and check that **Edge Gateway Dispatch Time (UTC)** is populated. Older firmware can still send readings, but those readings have no dispatch timestamp.

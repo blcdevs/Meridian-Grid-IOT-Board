@@ -231,6 +231,27 @@ void maintainTelemetryQueue() {
     if (prefs.putUInt("queueOffset", pendingQueueEnd) == sizeof(uint32_t)) queueOffset = pendingQueueEnd;
     return;
   }
+#if ENABLE_PAYLOAD_SIGNATURE
+  // Add a separately signed timestamp to each actual MQTT publish attempt.
+  // The queued measurement and its original signature remain intact.
+  const String hashPrefix = "\"payloadHash\":\"";
+  const int hashField = record.indexOf(hashPrefix);
+  if (rtcReady && hashField >= 0 && record.endsWith("}")) {
+    const unsigned int hashStart = hashField + hashPrefix.length();
+    if (record.length() > hashStart + 64 && record[hashStart + 64] == '"') {
+      char dispatchAt[25];
+      formatTelemetryTime(rtc.now(), dispatchAt, sizeof(dispatchAt));
+      const String message = String("meridian-dispatch-v1:") + record.substring(hashStart, hashStart + 64) + ":" + dispatchAt;
+      String dispatchSignature;
+      if (signCanonicalPayload(message, dispatchSignature)) {
+        record.remove(record.length() - 1);
+        record += String(",\"edgeDispatchAt\":\"") + dispatchAt + "\",\"edgeDispatchSignature\":\"" + dispatchSignature + "\"}";
+      } else {
+        Serial.println("Dispatch timestamp could not be signed; sending the measurement.");
+      }
+    }
+  }
+#endif
   pendingPacketId = mqttClient.publish(telemetryTopic.c_str(), 1, false, record.c_str());
   if (pendingPacketId) {
     pendingPublishMillis = millis();
@@ -353,13 +374,15 @@ void setup() {
 
 void loop() {
   read_data();
+  const bool recordDue = rtcReady && millis() - lastRecordMillis >= RECORD_INTERVAL_MS;
+  const DateTime measuredAt = recordDue ? rtc.now() : DateTime(0u);
   updateEnergyIntegration();
   i2c_display();
   maintainMqtt();
   maintainTelemetryQueue();
-  if (rtcReady && millis() - lastRecordMillis >= RECORD_INTERVAL_MS) {
+  if (recordDue) {
     lastRecordMillis += RECORD_INTERVAL_MS;
-    buildAndSendPayload();
+    buildAndSendPayload(measuredAt);
   }
   delay(1);
 }
