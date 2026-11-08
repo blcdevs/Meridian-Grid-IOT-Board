@@ -375,7 +375,7 @@ void setup() {
 void loop() {
   read_data();
   const bool recordDue = rtcReady && millis() - lastRecordMillis >= RECORD_INTERVAL_MS;
-  const DateTime measuredAt = recordDue ? rtc.now() : DateTime(0u);
+  const DateTime measuredAt = recordDue ? rtc.now() : DateTime();
   updateEnergyIntegration();
   i2c_display();
   maintainMqtt();
